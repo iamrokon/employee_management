@@ -6,10 +6,10 @@
       <p><strong>Name:</strong> {{ employee.name }}</p>
       <p><strong>Email:</strong> {{ employee.email }}</p>
       <p><strong>Department:</strong> {{ employee.department?.name }}</p>
-      <p><strong>Designation:</strong> {{ employee.employee_detail?.designation }}</p>
-      <p><strong>Salary:</strong> {{ employee.employee_detail?.salary }}</p>
-      <p><strong>Address:</strong> {{ employee.employee_detail?.address }}</p>
-      <p><strong>Joining Date:</strong> {{ employee.employee_detail?.joined_date }}</p>
+      <p><strong>Designation:</strong> {{ employee.detail?.designation }}</p>
+      <p><strong>Salary:</strong> {{ employee.detail?.salary }}</p>
+      <p><strong>Address:</strong> {{ employee.detail?.address }}</p>
+      <p><strong>Joining Date:</strong> {{ employee.detail?.joined_date }}</p>
 
       <div class="mt-4">
         <router-link

@@ -31,7 +31,8 @@ class EmployeeService
                 'ed.address',
                 'e.created_at',
                 'e.updated_at'
-            );
+            )
+            ->whereNull('e.deleted_at');
 
         // Search by name or email
         if ($s = $request->input('q')) {

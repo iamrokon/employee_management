@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Api\V2;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\EmployeeStoreRequest;
 use App\Http\Requests\Api\V1\EmployeeUpdateRequest;
-use App\Http\Resources\Api\V2\EmployeeResource;
+use App\Http\Resources\Api\V2\EmployeeResource as V2EmployeeResource;
+use App\Http\Resources\Api\V1\EmployeeResource;
 use App\Models\Employee;
 use App\Services\Api\V2\EmployeeService;
 use Illuminate\Http\Request;
@@ -22,7 +23,7 @@ class EmployeeController extends Controller
     public function index(Request $request)
     {
         $employees = $this->service->index($request);
-        return EmployeeResource::collection($employees);
+        return V2EmployeeResource::collection($employees);
     }
 
     public function store(EmployeeStoreRequest $request)

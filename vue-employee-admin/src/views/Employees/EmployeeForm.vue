@@ -85,7 +85,7 @@ async function fetchDepartments() {
 async function fetchEmployee(id) {
   const res = await api.get(`/employees/${id}`);
   const emp = res.data.data;
-  console.log("Employee API response:", emp.department.id)
+  console.log("Employee API response:", emp)
   form.value.name = emp.name;
   form.value.email = emp.email;
   form.value.department_id = emp.department.id;
