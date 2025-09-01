@@ -1,6 +1,6 @@
 Employee Management System
 A simple Employee Management System API built with Laravel 12 for the backend and Vue 3 + TailwindCSS for the frontend.
-The system supports employee CRUD operations, searching, filtering, sorting, pagination, and department association.
+The system supports employee CRUD operations, searching, filtering, sorting, pagination, department association, and Redis-based caching for optimized performance.
 ________________________________________
 Features
 Backend (Laravel)
@@ -17,6 +17,9 @@ o	Joining date (joined_date)
 •	Resource-based API responses
 •	Transaction-safe employee creation and updates
 •	Indexing for optimized queries
+•	Redis-based caching for employee listings to reduce DB queries
+o	Cache is automatically cleared on employee create, update, or delete
+o	Uses Laravel Cache with Redis driver (supports tags for safe clearing)
 Frontend (Vue 3 + TailwindCSS)
 •	List employees with pagination
 •	Filters:
@@ -36,14 +39,18 @@ cd employee-management
  	composer install
 3.	Copy .env and configure database
  	cp .env.example .env
- 	Update .env with your DB credentials.
+ 	Update .env with your DB credentials and Redis configuration:
+  CACHE_STORE=redis
+  REDIS_CLIENT=predis
+  REDIS_HOST=127.0.0.1
+  REDIS_PASSWORD=null
+  REDIS_PORT=6379
 4.	Generate app key
  	php artisan key:generate
 5.	Run migrations and seeders
  	php artisan migrate --seed
 6.	Run the development server
  	php artisan serve
-________________________________________
 Frontend
 1.	Navigate to the frontend directory
  	cd frontend
@@ -51,22 +58,24 @@ Frontend
  	npm install
 3.	Run the development server
  	npm run dev
-4.	Open your browser at http://localhost:5173 (or as shown in terminal)
-5. Hit the login button and fill the form with followings:
-  email: test@example.com
-  password: password
+4.	Open your browser at http://localhost:5173
+
+5.	Hit the login button and use credentials:
+o	email: test@example.com
+
+o	password: password
 ________________________________________
 API Endpoints
 Employees
 Method	Endpoint	Description
-GET	/api/employees	List employees with filters, sorting, and pagination
+GET	/api/employees	List employees with filters, sorting, pagination (Redis cached)
 POST	/api/employees	Create a new employee
 GET	/api/employees/{id}	Show employee details
 PUT/PATCH	/api/employees/{id}	Update employee details
-DELETE	/api/employees/{id}	Soft delete employee
+DELETE	/api/employees/{id}	Soft delete employee (cache cleared automatically)
 Departments
 Method	Endpoint	Description
-GET	/api/departments	List all departments
+GET	/api/departments	List all departments (cache can be optionally enabled)
 ________________________________________
 Filters & Sorting
 •	Search: q query parameter (search by name or email)
@@ -97,23 +106,10 @@ List Employees
       },
       "created_at": "2025-08-31T20:18:55.000000Z",
       "updated_at": null
-    },
-  ]
-  "links": {
-    "first": "...",
-    "last": "...",
-    "prev": null,
-    "next": "..."
-  },
-  "meta": {
-    "current_page": 1,
-    "from": 1,
-    "last_page": 5,
-    "path": "...",
-    "per_page": 10,
-    "to": 10,
-    "total": 50
-  }
+    }
+  ],
+  "links": { ... },
+  "meta": { ... }
 }
 Create Employee
 {
@@ -130,10 +126,11 @@ Create Employee
 ________________________________________
 Testing
 •	Run PHPUnit tests:
+
 php artisan test
 •	Tests cover:
-o	Employee listing with filters and pagination
-o	Employee creation, update, and soft deletion
+o	Employee listing with filters and pagination (Redis cache tested)
+o	Employee creation, update, and soft deletion (cache cleared automatically)
 o	Search and sorting
 ________________________________________
 Database Indexes
