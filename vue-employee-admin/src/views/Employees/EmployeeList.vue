@@ -101,18 +101,30 @@ const sort = ref("created_at");
 const order = ref("desc");
 
 async function fetchEmployees(page = 1) {
-  const res = await api.get("/employees", {
-    params: {
-      q: search.value || undefined,
-      salary_min: salaryMin.value || undefined,
-      salary_max: salaryMax.value || undefined,
-      department_id: departmentId.value || undefined,
-      sort: sort.value || "created_at",  // default created_at
-      order: order.value || "desc",       // default desc
-      page,
-    },
-  });
-  employees.value = res.data;
+  try {
+    const res = await api.get("/employees", {
+      params: {
+        q: search.value || undefined,
+        salary_min: salaryMin.value || undefined,
+        salary_max: salaryMax.value || undefined,
+        department_id: departmentId.value || undefined,
+        sort: sort.value || "created_at",
+        order: order.value || "desc",
+        page, // pass page number
+      },
+    });
+
+    // Laravel paginated response structure
+    employees.value = {
+      data: res.data.data,          // actual employee data
+      current_page: res.data.meta.current_page,
+      last_page: res.data.meta.last_page,
+      prev_page_url: res.data.links.prev,
+      next_page_url: res.data.links.next,
+    };
+  } catch (err) {
+    console.error("Failed to fetch employees:", err);
+  }
 }
 
 async function fetchDepartments() {
