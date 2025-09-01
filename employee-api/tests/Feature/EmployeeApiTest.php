@@ -31,7 +31,7 @@ class EmployeeApiTest extends TestCase
     {
         Employee::factory()->count(15)->create();
 
-        $response = $this->getJson('/api/employees?per_page=10');
+        $response = $this->getJson('/api/v1/employees?per_page=10');
 
         $response->assertStatus(200)
                  ->assertJsonStructure([
@@ -51,11 +51,11 @@ class EmployeeApiTest extends TestCase
             'email' => 'john@example.com',
         ]);
 
-        $response = $this->getJson('/api/employees?q=John');
+        $response = $this->getJson('/api/v1/employees?q=John');
         $response->assertStatus(200);
         $this->assertEquals('John Doe', $response->json('data.0.name'));
 
-        $response = $this->getJson('/api/employees?q=john@example.com');
+        $response = $this->getJson('/api/v1/employees?q=john@example.com');
         $response->assertStatus(200);
         $this->assertEquals('John Doe', $response->json('data.0.name'));
     }
@@ -66,7 +66,7 @@ class EmployeeApiTest extends TestCase
         $dept = Department::first();
         Employee::factory()->count(5)->create(['department_id' => $dept->id]);
 
-        $response = $this->getJson("/api/employees?department_id={$dept->id}");
+        $response = $this->getJson("/api/v1/employees?department_id={$dept->id}");
         $response->assertStatus(200);
 
         foreach ($response->json('data') as $emp) {
@@ -83,7 +83,7 @@ class EmployeeApiTest extends TestCase
         $emp2 = Employee::factory()->create();
         $emp2->detail()->create(['salary' => 10000, 'designation' => 'Manager', 'joined_date' => now()]);
 
-        $response = $this->getJson('/api/employees?salary_min=6000&salary_max=15000');
+        $response = $this->getJson('/api/v1/employees?salary_min=6000&salary_max=15000');
         $response->assertStatus(200);
 
         foreach ($response->json('data') as $emp) {
@@ -107,7 +107,7 @@ class EmployeeApiTest extends TestCase
             ],
         ];
 
-        $response = $this->postJson('/api/employees', $payload);
+        $response = $this->postJson('/api/v1/employees', $payload);
         $response->assertStatus(201)
                  ->assertJsonFragment(['name' => 'Jane Doe', 'email' => 'jane@example.com']);
     }
@@ -118,7 +118,7 @@ class EmployeeApiTest extends TestCase
         $employee = Employee::factory()->create();
         $employee->detail()->create(['salary' => 8000, 'designation' => 'QA', 'joined_date' => now()]);
 
-        $response = $this->getJson("/api/employees/{$employee->id}");
+        $response = $this->getJson("/api/v1/employees/{$employee->id}");
         $response->assertStatus(200)
                  ->assertJsonFragment(['id' => $employee->id]);
     }
@@ -136,7 +136,7 @@ class EmployeeApiTest extends TestCase
             ],
         ];
 
-        $response = $this->putJson("/api/employees/{$employee->id}", $payload);
+        $response = $this->putJson("/api/v1/employees/{$employee->id}", $payload);
         $response->assertStatus(200)
                  ->assertJsonFragment(['name' => 'Updated Name', 'salary' => 9000]);
     }
@@ -146,7 +146,7 @@ class EmployeeApiTest extends TestCase
     {
         $employee = Employee::factory()->create();
 
-        $response = $this->deleteJson("/api/employees/{$employee->id}");
+        $response = $this->deleteJson("/api/v1/employees/{$employee->id}");
         $response->assertStatus(200)
                  ->assertJsonFragment(['message' => 'Employee soft-deleted.']);
 
