@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\EmployeeStoreRequest;
-use App\Http\Requests\EmployeeUpdateRequest;
-use App\Http\Resources\EmployeeResource;
+use App\Http\Requests\Api\V1\EmployeeStoreRequest;
+use App\Http\Requests\Api\V1\EmployeeUpdateRequest;
+use App\Http\Resources\Api\V1\EmployeeResource;
 use App\Models\Employee;
-use App\Services\EmployeeService;
+use App\Services\Api\V1\EmployeeService;
 use Illuminate\Http\Request;
 
 class EmployeeController extends Controller

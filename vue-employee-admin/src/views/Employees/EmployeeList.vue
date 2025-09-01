@@ -26,12 +26,6 @@
         <option value="desc" selected>Descending</option>
         <option value="asc">Ascending</option>
       </select>
-
-      <!-- <select v-model="order" class="border p-2 rounded">
-        <option value="null" selected>Select Sort</option>
-        <option value="desc">Joining Date Desc</option>
-        <option value="asc">Joining Date Asc</option>
-      </select> -->
     </div>
 
     <table class="w-full bg-white shadow rounded mb-4">
@@ -56,7 +50,13 @@
           <td class="p-2">{{ emp.detail?.joined_date ?? "-" }}</td>
           <td class="p-2">
             <router-link :to="`/employees/${emp.id}`" class="text-blue-500">View</router-link> |
-            <router-link :to="`/employees/${emp.id}/edit`" class="text-green-500">Edit</router-link>
+            <router-link :to="`/employees/${emp.id}/edit`" class="text-green-500">Edit</router-link> |
+            <button
+              @click="deleteEmployee(emp.id)"
+              class="text-red-500 hover:underline"
+            >
+              Delete
+            </button>
           </td>
         </tr>
       </tbody>
@@ -118,6 +118,19 @@ async function fetchEmployees(page = 1) {
 async function fetchDepartments() {
   const res = await api.get("/departments");
   departments.value = res.data;
+}
+
+async function deleteEmployee(id) {
+  if (!confirm("Are you sure you want to delete this employee?")) return;
+
+  try {
+    await api.delete(`/employees/${id}`);
+    // Refetch employees to update the list
+    fetchEmployees(employees.value.current_page);
+  } catch (error) {
+    console.error("Failed to delete employee:", error);
+    alert("Failed to delete employee. Try again.");
+  }
 }
 
 onMounted(() => {

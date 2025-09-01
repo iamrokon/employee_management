@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Api\V1;
 
 use App\Models\Employee;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -12,7 +12,7 @@ class EmployeeService
     /**
      * List employees with search, filter, sort and pagination.
      */
-    public function index(Request $request)
+    public function index(Request $request): LengthAwarePaginator
     {
         $perPage = min((int)$request->input('per_page', 20), 100);
 
@@ -26,7 +26,7 @@ class EmployeeService
             if ($s !== '') {
                 $query->where(function ($q) use ($s) {
                     $q->where('employees.name', 'like', "{$s}%")
-                    ->orWhere('employees.email', 'like', "{$s}%");
+                      ->orWhere('employees.email', 'like', "{$s}%");
                 });
             }
         }
